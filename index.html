@@ -29,8 +29,8 @@
 {"@context":"https://schema.org","@type":"VeterinaryCare","name":"Айболит Плюс","description":"Ветеринарная клиника: план лечения и цена письменно до начала, объясняем каждый шаг, обезболивание перед вмешательствами, приём по записи на своё время.","url":"https://aybolit-vlg.ru","image":"https://aybolit-vlg.ru/assets/og.jpg","telephone":"+7 (8442) 38-06-40","openingHours":"Mo-Sa 09:00-20:00","address":{"@type":"PostalAddress","streetAddress":"ул. Мира, 12","addressLocality":"Волгоград","addressCountry":"RU"},"priceRange":"от 500 ₽","sameAs":["https://yandex.ru/maps/?text=%D0%92%D0%BE%D0%BB%D0%B3%D0%BE%D0%B3%D1%80%D0%B0%D0%B4%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%9C%D0%B8%D1%80%D0%B0%2012"]}
 </script>
 <style>
-  /* ---- тема: шесть цветов, два шрифта. Палитра В «молочный + индиго» ---- */
-  .v-page {
+  /* ---- тема: шесть цветов, два шрифта. Палитра В «молочный + индиго». Переменные на :root и .v-page: .v-page перебивает тёмную тему из vibe.css, :root даёт их поп-апу вне страницы ---- */
+  :root, .v-page {
     --v-canvas: #f4f5f9; --v-surface: #ffffff;
     --v-ink: #1e2233; --v-ink-soft: #5a5f74;          /* 5,8:1 на холсте */
     --v-accent: #3b4fa3; --v-accent-ink: #f5f6fc;     /* кнопка 6,9:1 */
@@ -46,6 +46,21 @@
     /* мелкие кегли не ниже 13 и 15 px */
     --v-t-xs: clamp(0.8125rem, 0.79rem + 0.15vw, 0.85rem);
     --v-t-sm: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
+    --v-t-base: clamp(1rem, 0.96rem + 0.22vw, 1.125rem);
+    --v-t-lg: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+    --v-t-xl: clamp(1.6rem, 1.35rem + 1.2vw, 2.25rem);
+    --v-t-2xl: clamp(2rem, 1.5rem + 2.4vw, 3.4rem);
+    --v-t-3xl: clamp(2.6rem, 1.7rem + 4.2vw, 5rem);
+    --v-t-4xl: clamp(3rem, 1.6rem + 6.4vw, 7rem);
+    --v-track-wide: 0.08em;
+    /* отступы и служебное — на :root, чтобы работали и в поп-апе вне .v-page */
+    --v-1: 0.25rem; --v-2: 0.5rem; --v-3: 0.75rem; --v-4: 1rem; --v-5: 1.5rem;
+    --v-6: 2rem; --v-7: 3rem; --v-8: 4rem; --v-9: 6rem; --v-10: 8rem;
+    --v-gutter: clamp(1.25rem, 4vw, 4rem);
+    --v-measure: 60ch;
+    --v-hair: color-mix(in oklab, var(--v-ink) 14%, transparent);
+    --v-hair-strong: color-mix(in oklab, var(--v-ink) 26%, transparent);
+    --v-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     --v-section: clamp(3.5rem, 8vw, 7rem);
   }
   html, body { margin: 0; background: #f4f5f9; }
@@ -54,6 +69,18 @@
   .v-page .v-btn { font-size: var(--v-t-sm); }
   .nowrap { white-space: nowrap; }
   .q { color: var(--v-accent-deep); }   /* номер вопроса в лейбле */
+
+  /* эффект волны при наведении на кнопки: волнистый круг растёт от центра и остаётся мягким бликом */
+  .v-btn { position: relative; overflow: hidden; }
+  .v-btn::after { content: ""; position: absolute; left: 50%; top: 50%; width: 145%; aspect-ratio: 1; border-radius: 44%;
+    background: radial-gradient(closest-side, rgb(255 255 255 / .45), rgb(255 255 255 / .18) 52%, transparent 76%);
+    transform: translate(-50%, -50%) rotate(0deg) scale(0);
+    transition: transform .7s var(--v-ease-out); pointer-events: none; }
+  .v-btn:hover::after { transform: translate(-50%, -50%) rotate(160deg) scale(1); }
+  .v-btn--ghost::after { background: radial-gradient(closest-side, rgb(59 79 163 / .3), rgb(59 79 163 / .12) 52%, transparent 76%); }
+
+  /* второстепенные строки крупных заголовков: каждая строго одна строка, без переносов */
+  .v-display .v-sub { display: block; white-space: nowrap; font-size: .58em; letter-spacing: var(--v-track-tight); line-height: 1.1; }
 
   /* ---- шапка v2: два яруса по референсу — белая служебная полоса + тёмная навигация ---- */
   .hdr { position: fixed; inset: 0 0 auto 0; z-index: 30; }
@@ -103,21 +130,21 @@
   }
 
   /* ---- 1 · hero (вариант В): три плана из карточек – кабинет, потом кабинет целиком, потом врач -------- */
-  .hero__back img { position: absolute; max-width: none; width: 112%; height: 112%; left: -6%; top: -6%; object-fit: cover; object-position: 62% 50%; }
+  .hero__back img { position: absolute; max-width: none; width: 112%; height: 112%; left: -6%; top: -6%; object-fit: cover; object-position: 72% 50%; }
   /* карточки-планы: белая рамка-полароид, наклон статичен на обёртке, глубину дают скорость слоя и тень */
   .hero__card { position: absolute; z-index: 2; border-radius: calc(var(--v-radius) - 4px); overflow: hidden; background: var(--v-surface); border: 5px solid #fff; box-shadow: var(--v-e2); }
   .hero__card .v-layer { pointer-events: none; }
   .hero__card img { position: absolute; max-width: none; width: 124%; height: 124%; left: -12%; top: -12%; object-fit: cover; display: block; }
-  .hero__card--mid { right: 15vw; top: 14vh; width: 20vw; max-width: 21rem; aspect-ratio: 3 / 4; transform: rotate(3deg); }
-  .hero__card--front { right: 3.5vw; bottom: 9vh; width: 14.5vw; max-width: 16rem; aspect-ratio: 3 / 4; transform: rotate(-3deg); }
+  .hero__card--mid { right: 2.5vw; top: 10vh; width: 24vw; max-width: 25rem; aspect-ratio: 3 / 4; transform: rotate(3deg); }
+  .hero__card--front { right: 28vw; bottom: 7vh; width: 17.5vw; max-width: 19rem; aspect-ratio: 3 / 4; transform: rotate(-3deg); }
   .hero__copy { bottom: clamp(3.5rem, 10vh, 7rem); max-width: min(44rem, 88vw); }
   .hero__label { display: block; margin-bottom: var(--v-4); }
   .hero__copy .v-display { font-size: clamp(2.3rem, 1.3rem + 3.3vw, 4.3rem); line-height: 1.02; max-width: 19ch; }
   .hero__copy .v-lede { margin-top: var(--v-5); max-width: 40ch; color: var(--v-ink); }
   /* преимущества на первом экране: две колонки коротких строк, без карточек */
   .v-page .hero__pluses { margin-top: 1.75rem; display: grid; grid-template-columns: max-content max-content; justify-content: start; gap: var(--v-2) var(--v-5); font-size: var(--v-t-sm); color: var(--v-ink); }
-  .hero__pluses li { display: flex; gap: .55em; align-items: baseline; }
-  .hero__pluses li::before { content: "+"; flex: none; width: auto; height: auto; border-radius: 0; background: none; color: var(--v-accent-deep); font-weight: 700; font-size: 1.05em; line-height: 1; transform: none; }
+  .hero__pluses li { display: flex; gap: .6em; align-items: flex-start; }
+  .hero__pluses li svg { flex: none; width: 1.15em; height: 1.15em; margin-top: .1em; color: var(--v-accent-deep); }
   .hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--v-4) var(--v-6); margin-top: var(--v-6); }
   .hero__tel { text-decoration: none; color: var(--v-ink); font-size: var(--v-t-sm); display: inline-flex; align-items: center; min-height: 44px; gap: .35em; }
   .hero__tel b { font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
@@ -127,11 +154,12 @@
   .hero__five { bottom: clamp(4.5rem, 14vh, 9rem); max-width: min(40rem, 88vw); }
   .hero__five .v-display { font-size: var(--v-t-2xl); line-height: 1.04; max-width: 16ch; }
   .hero__five .v-lede { margin-top: var(--v-4); max-width: 34ch; }
-  .hero__five ol { display: flex; flex-wrap: wrap; gap: .5em .9em; margin-top: var(--v-5); font-size: var(--v-t-sm); color: var(--v-ink-soft); }
-  .hero__five ol li { display: inline-flex; align-items: baseline; gap: .35em; }
-  .hero__five ol b { font-family: var(--v-font-display); font-weight: 500; color: var(--v-accent-deep); font-size: var(--v-t-xs); }
+  .hero__five ol { display: grid; grid-template-columns: repeat(2, minmax(0, 16rem)); justify-content: start; gap: .65em; margin-top: var(--v-5); font-size: var(--v-t-sm); }
+  .hero__five ol li { display: inline-flex; align-items: center; gap: .55em; white-space: nowrap; background: var(--v-surface); border: 1px solid var(--v-hair); border-radius: 999px; padding: .5em 1.15em .5em .55em; color: var(--v-ink); box-shadow: var(--v-e1); }
+  .hero__five ol li:last-child { grid-column: 1 / -1; justify-self: center; }
+  .hero__five ol b { display: grid; place-items: center; width: 1.75em; height: 1.75em; border-radius: 50%; background: var(--v-accent); color: #fff; font-family: var(--v-font-display); font-weight: 500; font-size: var(--v-t-xs); flex: none; }
   @media (max-width: 860px) {
-    .hero__back img { object-position: 55% 55%; }
+    .hero__back img { object-position: 60% 55%; }
     .hero__card--mid { top: 15vh; right: 4vw; width: 27vw; max-width: none; }
     .hero__card--front { top: 26vh; right: 16vw; bottom: auto; width: 22vw; max-width: 32vw; }
     .v-scrim--light.hero__band { display: block; background: linear-gradient(to top, rgb(244 245 249 / .94) 0%, rgb(244 245 249 / .6) 34%, transparent 62%), linear-gradient(to right, rgb(244 245 249 / .9) 0%, rgb(244 245 249 / .55) 52%, transparent 78%); }
@@ -182,7 +210,7 @@
   .pain { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: var(--v-8) var(--v-9); align-items: start; }
   .pain__fig { aspect-ratio: 3 / 4; border-radius: var(--v-radius); overflow: hidden; box-shadow: var(--v-e2); background: var(--v-surface); max-width: 26rem; position: sticky; top: clamp(5rem, 12vh, 7rem); }
   .pain__fig .v-layer img { width: 100%; height: 118%; left: 0; top: -9%; object-fit: cover; }
-  .pain__fig figcaption { position: absolute; z-index: 3; left: var(--v-5); right: var(--v-5); top: var(--v-5); font-size: var(--v-t-sm); color: var(--v-ink-soft); max-width: 26ch; }
+  .pain__fig .figcap { position: absolute; z-index: 3; left: var(--v-4); top: var(--v-4); font-size: var(--v-t-sm); color: var(--v-ink-soft); max-width: 24ch; }
   .pain__copy .v-label { display: block; margin-bottom: var(--v-5); }
   .pain__copy > p { margin-top: var(--v-5); color: var(--v-ink-soft); max-width: 46ch; text-wrap: pretty; }
   .rows { margin-top: var(--v-7); }
@@ -217,13 +245,12 @@
   .steps p { color: var(--v-ink-soft); max-width: 46ch; text-wrap: pretty; }
   .visit__fig { position: sticky; top: clamp(5rem, 12vh, 7rem); aspect-ratio: 4 / 3; border-radius: var(--v-radius); overflow: hidden; box-shadow: var(--v-e2); background: var(--v-surface); }
   .visit__fig img { width: 100%; height: 100%; object-fit: cover; }
-  .visit__fig figcaption { position: absolute; left: var(--v-5); right: 40%; top: var(--v-5); font-size: var(--v-t-sm); color: var(--v-ink-soft); }
+  .visit__fig .figcap { position: absolute; left: var(--v-4); top: var(--v-4); font-size: var(--v-t-sm); color: var(--v-ink-soft); max-width: 26ch; }
   .cta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--v-4) var(--v-5); margin-top: var(--v-7); }
   .cta span { color: var(--v-ink-soft); font-size: var(--v-t-sm); max-width: 36ch; text-wrap: pretty; }
   @media (max-width: 860px) {
     .visit { grid-template-columns: 1fr; gap: var(--v-6); }
     .visit__fig { position: relative; top: auto; aspect-ratio: 16 / 11; }
-    .visit__fig figcaption { right: var(--v-5); }
     .steps h3 { font-size: var(--v-t-base); }
   }
 
@@ -239,6 +266,15 @@
   .price__item p { color: var(--v-ink-soft); max-width: 42ch; text-wrap: pretty; }
   .price__item .where { display: inline-flex; align-items: center; gap: .5em; margin-top: var(--v-2); font-size: var(--v-t-sm); color: var(--v-ink); }
   .price__item .where i { width: .6em; height: .6em; border-radius: 50%; background: var(--v-accent); flex: none; }
+  /* подсказка, что пункты листаются скроллом */
+  .price__hint { margin-top: var(--v-5); display: grid; justify-items: start; gap: var(--v-2); }
+  .price__dots { display: inline-flex; gap: .5em; }
+  .price__dots i { width: .55em; height: .55em; margin: 0; border-radius: 50%; background: var(--v-hair-strong); transition: background-color .3s var(--v-ease-out), transform .3s var(--v-ease-out); }
+  .price__dots i.is-on { background: var(--v-accent); transform: scale(1.3); }
+  .price__hinttext { font-size: var(--v-t-xs); color: var(--v-ink-soft); display: inline-flex; align-items: center; gap: .55em; }
+  .price__hinttext::after { content: ""; width: .5em; height: .5em; border-right: 2px solid var(--v-accent-deep); border-bottom: 2px solid var(--v-accent-deep); animation: price-nudge 1.6s var(--v-ease-out) infinite; }
+  @keyframes price-nudge { 0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: .55; } 50% { transform: rotate(45deg) translate(.16em, .16em); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .price__hinttext::after { animation: none; opacity: .8; } }
   /* силуэты: кошка и собака из «плановых» карт, зоны услуг */
   .chart { position: relative; justify-self: center; width: min(100%, 34rem); }
   .chart__svg { width: 100%; height: auto; display: block; }
@@ -280,7 +316,7 @@
   .v-page .who__ph--2 { opacity: 0; transform: scale(1.04); }
   .who[data-doc="2"] .who__ph--1 { opacity: 0; transform: scale(1.04); }
   .who[data-doc="2"] .who__ph--2 { opacity: 1; transform: none; }
-  .who__fig figcaption { position: absolute; left: var(--v-5); right: var(--v-5); top: var(--v-5); font-size: var(--v-t-sm); color: var(--v-ink-soft); max-width: 24ch; }
+  .who__fig .figcap { position: absolute; left: var(--v-4); top: var(--v-4); font-size: var(--v-t-sm); color: var(--v-ink-soft); max-width: 24ch; }
   .docs { display: grid; gap: var(--v-5); }
   /* tilt пишет transform сам: появление карточек только через opacity, без transition на transform */
   .docs > .doc { transform: none; transition: opacity .62s var(--v-ease-out); }
@@ -300,9 +336,11 @@
   .clean { margin-top: var(--v-7); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: var(--v-8) var(--v-9); align-items: center; }
   .clean__fig { position: relative; aspect-ratio: 16 / 10; border-radius: var(--v-radius); overflow: hidden; box-shadow: var(--v-e2); background: var(--v-surface); }
   .clean__fig img { width: 100%; height: 100%; object-fit: cover; }
-  .clean__fig figcaption { position: absolute; left: var(--v-5); top: var(--v-5); right: 50%; font-size: var(--v-t-sm); color: var(--v-ink-soft); }
-  /* подписи поверх фото: тёмный текст + белое свечение, чтобы читалось на любом фоне */
-  .pain__fig figcaption, .visit__fig figcaption, .who__fig figcaption, .clean__fig figcaption { color: var(--v-ink); font-weight: 500; text-shadow: 0 1px 10px rgb(255 255 255 / .9), 0 0 3px rgb(255 255 255 / .95); }
+  .clean__fig .figcap { position: absolute; left: var(--v-4); top: var(--v-4); font-size: var(--v-t-sm); color: var(--v-ink-soft); max-width: 26ch; }
+  /* подписи поверх фото: светлая полупрозрачная плашка, чтобы читалось на любом фоне */
+  .pain__fig .figcap, .visit__fig .figcap, .who__fig .figcap, .clean__fig .figcap { color: var(--v-ink); font-weight: 500; background: rgb(255 255 255 / .78); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-radius: .9em; padding: .5em .8em; text-shadow: none; }
+  /* обёртка для совместного появления фото и плашки при скролле (шторка reveal накладывается на всю группу) */
+  .v-clip { position: relative; }
   .facts li { padding: var(--v-4) 0; border-top: 1px solid var(--v-hair); display: grid; gap: var(--v-1); }
   .facts li:last-child { border-bottom: 1px solid var(--v-hair); }
   .facts b { font-weight: 600; }
@@ -315,7 +353,6 @@
     .doc--lead { padding: var(--v-6) var(--v-5); }
     .clean { grid-template-columns: 1fr; gap: var(--v-6); margin-top: var(--v-7); }
     .clean__fig { aspect-ratio: 16 / 11; }
-    .clean__fig figcaption { right: var(--v-5); }
   }
 
   /* ---- 7 · вопрос 5 «Когда можно прийти?»: кабинет вечером за текстом, колонка с нотками, футер внутри сцены --- */
@@ -367,6 +404,42 @@
     .vft__grid { grid-template-columns: 1fr; gap: var(--v-6); padding: var(--v-7) 0 var(--v-6); }
     .vft__barin { flex-direction: column; }
   }
+
+  /* ---- поп-ап формы записи ---- */
+  .pop { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: var(--v-5); }
+  .pop[hidden] { display: none; }
+  .pop__overlay { position: absolute; inset: 0; background: rgb(15 18 38 / .55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .pop__card { position: relative; width: min(100%, 26rem); max-height: calc(100svh - 2 * var(--v-5)); overflow: auto; background: #fff; border-radius: var(--v-radius); box-shadow: var(--v-e2); padding: var(--v-6); }
+  .pop__x { position: absolute; top: var(--v-2); right: var(--v-2); width: 42px; height: 42px; border: 0; border-radius: 50%; background: none; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--v-ink-soft); }
+  .pop__x:hover { background: var(--v-canvas); color: var(--v-ink); }
+  .pop__card h3 { font-family: var(--v-font-display); font-weight: 500; font-size: var(--v-t-xl); letter-spacing: -0.015em; line-height: 1.1; margin-top: var(--v-3); }
+  .pop__sub { margin-top: var(--v-2); color: var(--v-ink-soft); font-size: var(--v-t-sm); text-wrap: pretty; }
+  .pop__form { margin-top: var(--v-5); display: grid; gap: var(--v-3); }
+  .pop__form label { display: grid; gap: var(--v-1); font-size: var(--v-t-xs); font-weight: 600; letter-spacing: .01em; color: var(--v-ink); }
+  .pop__form input, .pop__form textarea { font: inherit; font-size: var(--v-t-sm); padding: .65em .8em; border: 1px solid var(--v-hair-strong); border-radius: .6em; background: var(--v-canvas); color: var(--v-ink); width: 100%; box-sizing: border-box; }
+  .pop__form input:focus, .pop__form textarea:focus { outline: 2px solid var(--v-accent); outline-offset: 1px; border-color: transparent; }
+  .pop__form textarea { resize: vertical; min-height: 4.5em; }
+  .pop__submit { justify-content: center; margin-top: var(--v-2); }
+  .pop__note { font-size: var(--v-t-xs); color: var(--v-ink-soft); text-wrap: pretty; }
+  .pop__done { margin-top: var(--v-5); display: grid; gap: var(--v-3); justify-items: start; }
+  .pop__done[hidden] { display: none; }
+  .pop__done b { font-family: var(--v-font-display); font-weight: 500; font-size: var(--v-t-lg); letter-spacing: -0.01em; }
+  .pop__done p { color: var(--v-ink-soft); font-size: var(--v-t-sm); text-wrap: pretty; }
+  .pop__done a { color: var(--v-ink); font-weight: 600; }
+
+  /* ---- правки: одинаковая длина кнопок, центрирование вопросов, фото первого визита, согласие 152-ФЗ ---- */
+  .hero__cta .v-btn { min-width: 13.5rem; justify-content: center; text-align: center; }
+  .close__btns .v-btn { flex: 1 1 0; max-width: 17rem; justify-content: center; text-align: center; }
+  .hero__five ol li { justify-content: center; }
+  /* у «Первого визита» фото лежит прямо в обёртке v-clip — растягиваем обёртку на всю рамку, иначе снизу пустая полоса */
+  .visit__fig .v-clip { position: absolute; inset: 0; }
+  .pop__agree label { display: flex; gap: .6em; align-items: flex-start; font-size: var(--v-t-xs); font-weight: 500; letter-spacing: 0; color: var(--v-ink-soft); line-height: 1.45; }
+  .pop__agree input { width: 1.1em; height: 1.1em; margin-top: .12em; flex: none; accent-color: var(--v-accent); }
+  .pop__agree a { color: var(--v-accent-deep); text-decoration: underline; text-underline-offset: 2px; }
+  .pop__agree.is-err label { color: #b3261e; }
+  .pop__policy { margin: var(--v-4) 0 var(--v-5); display: grid; gap: var(--v-3); font-size: var(--v-t-sm); color: var(--v-ink-soft); line-height: 1.55; }
+  .pop__policy b { color: var(--v-ink); }
+  .pop__policy a { color: var(--v-accent-deep); }
 </style>
 </head>
 <body>
@@ -386,7 +459,7 @@
         </div>
         <div class="hdr__tel">
           <a class="hdr__phone" href="tel:+78442380640">+7 (8442) 38-06-40</a>
-          <a class="hdr__callback" href="mailto:priem@aybolit-vlg.ru?subject=%D0%9F%D0%B5%D1%80%D0%B5%D0%B7%D0%B2%D0%BE%D0%BD%D0%B8%D1%82%D0%B5%20%D0%BC%D0%BD%D0%B5%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%9F%D0%BE%D0%B7%D0%B2%D0%BE%D0%BD%D0%B8%D1%82%D0%B5%2C%20%D0%BF%D0%BE%D0%B6%D0%B0%D0%BB%D1%83%D0%B9%D1%81%D1%82%D0%B0%2C%20%D0%BC%D0%BD%D0%B5%20%D0%BF%D0%BE%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%D1%83%3A%20">Заказать звонок</a>
+          <a class="hdr__callback" href="mailto:priem@aybolit-vlg.ru?subject=%D0%9F%D0%B5%D1%80%D0%B5%D0%B7%D0%B2%D0%BE%D0%BD%D0%B8%D1%82%D0%B5%20%D0%BC%D0%BD%D0%B5%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%9F%D0%BE%D0%B7%D0%B2%D0%BE%D0%BD%D0%B8%D1%82%D0%B5%2C%20%D0%BF%D0%BE%D0%B6%D0%B0%D0%BB%D1%83%D0%B9%D1%81%D1%82%D0%B0%2C%20%D0%BC%D0%BD%D0%B5%20%D0%BF%D0%BE%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%D1%83%3A%20" data-popopen="call">Заказать звонок</a>
         </div>
       </div>
     </div>
@@ -409,39 +482,29 @@
 
     <!-- 1 · УЗНАВАНИЕ (вариант В): три плана из карточек – кабинет целиком, врач; оффер и преимущества слева, кнопка над сгибом -->
     <!-- Фото: Veterinarian Pet Alliance, Newark, NJ — Wikimedia Commons. Демо-контент: перед сдачей клиенту заменить на съёмку его клиники. -->
-    <section id="top" data-v-act="pin" data-v-span="2.6" data-v-drift="#f4f5f9" aria-label="Ветклиника «Айболит Плюс»">
+    <section id="top" data-v-act="pin" data-v-span="3.1" data-v-drift="#f4f5f9" aria-label="Ветклиника «Айболит Плюс»">
       <div data-v-stage>
         <div class="v-layer hero__back" data-v-parallax="-0.3">
+          <!-- Фото: Veterinarian Pet Alliance, Wikimedia Commons (CC BY 4.0) — врач слушает кота стетоскопом -->
           <picture>
             <source media="(max-width: 860px)" srcset="assets/hero-m.webp">
-            <img id="hero-img" src="assets/hero.webp" alt="" width="1920" height="1080" fetchpriority="high">
+            <img id="hero-img" src="assets/hero.webp" alt="Врач ветклиники слушает рыжего кота стетоскопом в светлом кабинете" width="1920" height="1080" fetchpriority="high">
           </picture>
-        </div>
-        <div class="hero__card hero__card--mid">
-          <div class="v-layer" data-v-parallax="-0.55">
-            <img src="assets/doctor.webp" alt="" width="1200" height="1600" fetchpriority="high" decoding="async">
-          </div>
-        </div>
-        <div class="hero__card hero__card--front">
-          <div class="v-layer" data-v-parallax="-0.9">
-            <img src="assets/cabinet.webp" alt="" width="1200" height="1600" fetchpriority="high" decoding="async">
-          </div>
         </div>
         <div class="v-scrim v-scrim--light v-scrim--band hero__band" aria-hidden="true"></div>
 
         <div class="v-copy v-copy--lead hero__copy" data-v-cue="0 0.8 0 0.1">
-          <span class="v-label hero__label">Ветклиника «Айболит Плюс»</span>
           <h1 class="v-display v-display--xl" data-v-kinetic="lines">Ветклиника в Волгограде для тех, кто тянул с визитом</h1>
           <p class="v-lede">Первый визит – осмотр, анализы при необходимости и план письменно. Цена в плане итоговая, лечим только после вашего решения.</p>
           <ul class="hero__pluses" aria-label="Почему к нам">
-            <li>План и итоговая цена письменно до лечения</li>
-            <li>Обезболивание перед любым вмешательством</li>
-            <li>Тихий кабинет: музыка, окно, свой врач</li>
-            <li>Приём по записи, без очереди</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 13.5l2 2 4-4.5"/></svg><span>План и итоговая цена письменно до лечения</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.6-3 8.2-7 10-4-1.8-7-5.4-7-10V6z"/><path d="M9.5 12l2 2 3.5-4"/></svg><span>Обезболивание перед любым вмешательством</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6.5 9.5V20h11V9.5"/></svg><span>Тихий кабинет: музыка, окно, свой врач</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10.5h16M9 3v4.5M15 3v4.5"/><path d="M9 15.5l2 2 4-4"/></svg><span>Приём по записи, без очереди</span></li>
           </ul>
           <div class="hero__cta">
-            <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A">Записаться</a>
-            <a class="hero__tel" href="tel:+78442380640">или позвоните <b>+7 (8442) 38-06-40</b></a>
+            <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A" data-popopen>Записаться</a>
+            <a class="v-btn v-btn--ghost" href="tel:+78442380640" data-popopen="call">Заказать звонок</a>
           </div>
         </div>
 
@@ -479,7 +542,7 @@
         </ol>
         <div class="usl__foot" data-v-in data-v-in-self>
           <p>Не нашли свою ситуацию или не знаете, что именно нужно? Начните с осмотра: врач посмотрит, объяснит и напишет план с ценой по пунктам.</p>
-          <a class="v-btn v-btn--ghost" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A">Записаться</a>
+          <a class="v-btn v-btn--ghost" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A" data-popopen>Записаться</a>
         </div>
       </div>
     </section>
@@ -487,12 +550,12 @@
     <!-- 3 · ЦЕНА БЕЗДЕЙСТВИЯ и ПОВОРОТ: «Будет больно?» -->
     <section class="v-section v-section--tight" data-v-act="flow" data-v-drift="#eceef6" id="bolno" aria-label="Вопрос 1: будет больно?">
       <div class="v-wrap pain">
-        <figure class="pain__fig">
+        <div class="pain__fig">
           <div class="v-layer" data-v-parallax="-0.35">
             <img src="assets/cabinet.webp" alt="Котёнок на мягком полотенце у стола для осмотра: врач держит его лапами, кабинет светлый и тихий" width="1200" height="1600" loading="lazy" decoding="async">
           </div>
-          <figcaption>В кабинете тихо и светло. Перед каждым действием говорим, что сейчас будет</figcaption>
-        </figure>
+          <span class="figcap">В кабинете тихо и светло. Перед каждым действием говорим, что сейчас будет</span>
+        </div>
         <div class="pain__copy" data-v-in data-v-stagger="70">
           <span class="v-label"><span class="q">Вопрос 1</span> · Будет больно?</span>
           <h2 class="v-display v-display--lg">Откладывать больнее, чем лечить</h2>
@@ -516,7 +579,7 @@
       <div class="v-wrap visit">
         <div class="visit__copy" data-v-in data-v-stagger="70">
           <span class="v-label"><span class="q">Вопрос 2</span> · Что вы будете делать?</span>
-          <h2 class="v-display v-display--lg">Первый визит – смотрим и объясняем. Лечить не начинаем</h2>
+          <h2 class="v-display v-display--lg">Первый визит –<span class="v-sub">смотрим и объясняем.</span><span class="v-sub">Лечить не начинаем</span></h2>
           <p>Пять шагов, и после каждого вы понимаете, что происходит. Ни один пункт плана не появляется без вашего вопроса «зачем».</p>
           <ol class="steps">
             <li><h3><small>Шаг 1</small>Осмотр</h3><p>Смотрим питомца целиком: глаза, уши, кожу, зубы, живот. Спрашиваем, что беспокоит и как он дома: это влияет на то, как поведём приём.</p></li>
@@ -526,14 +589,16 @@
             <li><h3><small>Шаг 5</small>Решение</h3><p>Можно начать в этот же день, можно забрать план домой и подумать. Давить не будем.</p></li>
           </ol>
           <div class="cta">
-            <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A">Записаться</a>
+            <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A" data-popopen>Записаться</a>
             <span>Первый визит – осмотр и план за один приём. Напишите, что беспокоит, и подберём время.</span>
           </div>
         </div>
-        <figure class="visit__fig" data-v-reveal="left" data-v-reveal-at="0.1 0.42">
-          <img src="assets/workplace.webp" srcset="assets/workplace-900.webp 900w, assets/workplace.webp 1600w" sizes="(max-width: 860px) 100vw, 42vw" alt="Шкаф с препаратами и расходниками в процедурной: всё подписано и разложено по полкам" width="1600" height="900" loading="lazy" decoding="async">
-          <figcaption>Рабочее место собирается к вашему приёму: пакеты вскрываем при вас</figcaption>
-        </figure>
+        <div class="visit__fig">
+          <div class="v-clip" data-v-reveal="left" data-v-reveal-at="0.1 0.42">
+            <img src="assets/workplace.webp" srcset="assets/workplace-900.webp 900w, assets/workplace.webp 1600w" sizes="(max-width: 860px) 100vw, 42vw" alt="Шкаф с препаратами и расходниками в процедурной: всё подписано и разложено по полкам" width="1600" height="900" loading="lazy" decoding="async">
+            <span class="figcap">Рабочее место собирается к вашему приёму: пакеты вскрываем при вас</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -574,6 +639,10 @@
                 <span class="where"><i aria-hidden="true"></i>На силуэте: пасть кошки</span>
               </div>
             </div>
+            <div class="price__hint" aria-hidden="true">
+              <span class="price__dots" id="price-dots"><i class="is-on"></i><i></i><i></i><i></i><i></i></span>
+              <span class="price__hinttext">листайте вниз — пункты и цены меняются</span>
+            </div>
           </div>
           <div class="chart" id="chart" aria-hidden="false">
             <svg class="chart__svg" viewBox="0 0 600 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Силуэты кошки и собаки: зоны услуг">
@@ -606,15 +675,17 @@
       <div class="v-wrap">
         <div class="who__head" data-v-in data-v-stagger="70">
           <span class="v-label"><span class="q">Вопрос 4</span> · Кто будет лечить?</span>
-          <h2 class="v-display v-display--lg">Врач, который отвечает на «зачем»</h2>
+          <h2 class="v-display v-display--lg">Врач,<span class="v-sub">который отвечает на «зачем»</span></h2>
           <p>Имена, специализация и образование – только те, что есть в дипломах врачей. Ничего лишнего: ни «лучших в городе», ни выдуманного стажа.</p>
         </div>
         <div class="who" id="who" data-doc="1">
-          <figure class="who__fig" data-v-reveal="up" data-v-reveal-at="0.12 0.5">
-            <img class="who__ph who__ph--1" src="assets/doctor.webp" alt="Врач-терапевт слушает рыжего кота стетоскопом в светлом кабинете" width="1200" height="1600" loading="lazy" decoding="async">
-            <img class="who__ph who__ph--2" src="assets/doctor-2.webp" alt="Врач-хирург осматривает ухо белой собаки в том же светлом кабинете" width="1200" height="1600" loading="lazy" decoding="async">
-            <figcaption>Врач, который объясняет план до стола и каждый шаг на столе</figcaption>
-          </figure>
+          <div class="v-clip" data-v-reveal="left" data-v-reveal-at="0.12 0.5">
+            <div class="who__fig">
+              <img class="who__ph who__ph--1" src="assets/doctor.webp" alt="Врач-терапевт слушает рыжего кота стетоскопом в светлом кабинете" width="1200" height="1600" loading="lazy" decoding="async">
+              <img class="who__ph who__ph--2" src="assets/doctor-2.webp" alt="Врач-хирург осматривает ухо белой собаки в том же светлом кабинете" width="1200" height="1600" loading="lazy" decoding="async">
+              <span class="figcap">Врач, который объясняет план до стола и каждый шаг на столе</span>
+            </div>
+          </div>
           <div class="docs" data-v-in data-v-stagger="90">
             <article class="doc doc--lead is-on" data-v-tilt="4" data-doc="1" role="button" tabindex="0" aria-pressed="true" aria-controls="who">
               <b>Иванова Анна Сергеевна</b>
@@ -631,10 +702,13 @@
           </div>
         </div>
         <div class="clean">
-          <figure class="clean__fig" data-v-reveal="left" data-v-reveal-at="0.12 0.5">
-            <img src="assets/steril.webp" alt="Стерилизационная: автоклав с открытой дверцей, инструменты в запечатанных пакетах на полке и столе" width="1600" height="900" loading="lazy" decoding="async">
-            <figcaption>После каждого пациента инструменты проходят автоклав</figcaption>
-          </figure>
+          <div class="v-clip" data-v-reveal="left" data-v-reveal-at="0.12 0.5">
+            <figure class="clean__fig">
+              <!-- Фото: Veterinarian Pet Alliance, Wikimedia Commons (CC) — процедурная клиники -->
+              <img src="assets/steril.webp" alt="Процедурная: операционная лампа над столом, шкаф с расходниками и инструменты в запечатанных пакетах" width="1600" height="1000" loading="lazy" decoding="async">
+              <span class="figcap">Процедурная собирается к каждому приёму: всё запечатано до стола</span>
+            </figure>
+          </div>
           <div class="clean__copy" data-v-in data-v-stagger="70">
             <h3>Чем лечим и как это стерильно</h3>
             <ul class="facts">
@@ -663,8 +737,8 @@
               <h2 class="v-display v-display--xl">Запишитесь на своё время</h2>
               <p>Напишите или позвоните: подберём время, назовём цену первого визита и ответим на остальные вопросы до стола. Кабинет ждёт.</p>
               <div class="close__btns">
-                <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A" data-v-magnet="0.22" data-v-rise="0">Записаться</a>
-                <a class="v-btn v-btn--ghost" href="tel:+78442380640">Позвонить</a>
+                <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A" data-v-rise="0" data-popopen>Записаться</a>
+                <a class="v-btn v-btn--ghost" href="tel:+78442380640" data-popopen="call">Проконсультироваться</a>
               </div>
             </div>
             <div class="close__meta" data-v-cue="0.1">
@@ -713,17 +787,110 @@
     <div class="vft__bar">
       <div class="v-wrap vft__barin">
         <span>© 2026 Айболит Плюс</span>
+        <a href="#" data-popopen="policy" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">Политика обработки персональных данных</a>
         <span>Имеются противопоказания, необходима консультация ветеринарного врача</span>
       </div>
     </div>
   </footer>
 </div>
 
+<!-- Поп-ап формы записи -->
+<div class="pop" id="zapis-pop" role="dialog" aria-modal="true" aria-labelledby="zapis-pop-title" hidden>
+  <div class="pop__overlay" data-popclose></div>
+  <div class="pop__card">
+    <button class="pop__x" type="button" aria-label="Закрыть" data-popclose>&times;</button>
+    <span class="v-label">Айболит Плюс · запись</span>
+    <h3 id="zapis-pop-title">Записаться на приём</h3>
+    <p class="pop__sub">Оставьте контакты — перезвоним в течение 10 минут, подберём время и назовём цену первого визита.</p>
+    <form class="pop__form" id="zapis-form" novalidate>
+      <label>Ваше имя
+        <input type="text" name="name" autocomplete="name" placeholder="Как к вам обращаться" required>
+      </label>
+      <label>Телефон
+        <input type="tel" name="phone" autocomplete="tel" placeholder="+7 ___ ___-__-__" required>
+      </label>
+      <label>Питомец
+        <input type="text" name="pet" placeholder="Вид, кличка, возраст">
+      </label>
+      <label>Что беспокоит
+        <textarea name="msg" rows="3" placeholder="Кратко: цель визита или жалобы"></textarea>
+      </label>
+      <div class="pop__agree">
+        <label>
+          <input type="checkbox" name="agree" required>
+          <span>Соглашаюсь с <a href="#" data-popopen="policy">политикой обработки персональных данных</a></span>
+        </label>
+      </div>
+      <button class="v-btn pop__submit" type="submit">Отправить заявку</button>
+      <small class="pop__note">Демо-сайт: при отправке откроется ваша почтовая программа с готовым письмом на priem@aybolit-vlg.ru.</small>
+    </form>
+    <div class="pop__done" hidden>
+      <b>Заявка сформирована</b>
+      <p>Откроется почтовая программа с готовым письмом — останется нажать «Отправить». Если почта не открылась, позвоните нам: <a href="tel:+78442380640">+7 (8442) 38-06-40</a></p>
+      <button class="v-btn v-btn--ghost" type="button" data-popclose>Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Поп-ап заказа звонка -->
+<div class="pop" id="call-pop" role="dialog" aria-modal="true" aria-labelledby="call-pop-title" hidden>
+  <div class="pop__overlay" data-popclose></div>
+  <div class="pop__card">
+    <button class="pop__x" type="button" aria-label="Закрыть" data-popclose>&times;</button>
+    <span class="v-label">Айболит Плюс · звонок</span>
+    <h3 id="call-pop-title">Заказать звонок</h3>
+    <p class="pop__sub">Оставьте номер — перезвоним в течение 10 минут в рабочее время (пн–сб 9:00–20:00) и ответим на вопросы.</p>
+    <form class="pop__form" id="call-form" novalidate>
+      <label>Ваше имя
+        <input type="text" name="name" autocomplete="name" placeholder="Как к вам обращаться" required>
+      </label>
+      <label>Телефон
+        <input type="tel" name="phone" autocomplete="tel" placeholder="+7 ___ ___-__-__" required>
+      </label>
+      <label>Удобное время звонка
+        <input type="text" name="time" placeholder="Например: сегодня после 18:00">
+      </label>
+      <div class="pop__agree">
+        <label>
+          <input type="checkbox" name="agree" required>
+          <span>Соглашаюсь с <a href="#" data-popopen="policy">политикой обработки персональных данных</a></span>
+        </label>
+      </div>
+      <button class="v-btn pop__submit" type="submit">Жду звонка</button>
+      <small class="pop__note">Демо-сайт: при отправке откроется ваша почтовая программа с готовым письмом на priem@aybolit-vlg.ru.</small>
+    </form>
+    <div class="pop__done" hidden>
+      <b>Заявка сформирована</b>
+      <p>Откроется почтовая программа с готовым письмом — останется нажать «Отправить». Если почта не открылась, позвоните нам: <a href="tel:+78442380640">+7 (8442) 38-06-40</a></p>
+      <button class="v-btn v-btn--ghost" type="button" data-popclose>Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Поп-ап политики обработки персональных данных -->
+<div class="pop" id="policy-pop" role="dialog" aria-modal="true" aria-labelledby="policy-pop-title" hidden>
+  <div class="pop__overlay" data-popclose></div>
+  <div class="pop__card">
+    <button class="pop__x" type="button" aria-label="Закрыть" data-popclose>&times;</button>
+    <span class="v-label">Айболит Плюс · документы</span>
+    <h3 id="policy-pop-title">Политика обработки персональных данных</h3>
+    <p class="pop__sub">Согласие даётся в соответствии с Федеральным законом № 152-ФЗ «О персональных данных».</p>
+    <div class="pop__policy">
+      <p>Оставляя заявку на сайте, вы соглашаетесь на обработку ваших персональных данных: имени, номера телефона и сведений о питомце.</p>
+      <p><b>Оператор:</b> ООО «Айболит Плюс», г. Волгоград, ул. Мира, 12.</p>
+      <p><b>Цели обработки:</b> запись на приём, перезвон по заявке, подготовка плана лечения и расчёта стоимости визита.</p>
+      <p><b>Хранение и передача:</b> данные хранятся не дольше, чем этого требуют цели обработки, и не передаются третьим лицам, кроме случаев, предусмотренных законом.</p>
+      <p>Вы можете отозвать согласие в любой момент, позвонив по телефону <a href="tel:+78442380640">+7 (8442) 38-06-40</a>, — после этого данные будут удалены из журнала записи и заявок.</p>
+    </div>
+    <button class="v-btn v-btn--ghost" type="button" data-popclose>Понятно</button>
+  </div>
+</div>
+
 <script src="vibe.js"></script>
 <script>
   // На телефоне пины короче: data-v-span из CSS не поменять, правим атрибут до монтирования.
   if (window.matchMedia('(max-width: 860px)').matches) {
-    document.getElementById('top').setAttribute('data-v-span', '2.0');
+    document.getElementById('top').setAttribute('data-v-span', '2.4');
     document.getElementById('ceny').setAttribute('data-v-span', '2.7');
   }
   Vibe.mount(document.querySelector('.v-page'));
@@ -732,7 +899,7 @@
   // s0 осмотр (контур), s1 вакцинация (тело мягко), s2 уши/глаза/кожа (голова кошки), s3 стерилизация (живот собаки), s4 зубы (пасть кошки).
   // Кольцо-указатель встаёт на активную зону по её положению в SVG.
   (function () {
-    var act = document.getElementById('ceny'), chart = document.getElementById('chart'), ring = document.getElementById('ring'), cap = document.getElementById('chart-cap');
+    var act = document.getElementById('ceny'), chart = document.getElementById('chart'), ring = document.getElementById('ring'), cap = document.getElementById('chart-cap'), dots = document.getElementById('price-dots');
     if (!act || !chart) return;
     var svg = chart.querySelector('svg');
     var caps = ['Осмотр · весь организм', 'Вакцинация · по возрасту', 'Уши, глаза и кожа', 'Стерилизация и хирургия', 'Зубы · чистка и удаление камня'];
@@ -750,6 +917,7 @@
       last = s;
       for (var i = 0; i < 5; i++) chart.classList.toggle('is-s' + i, i === s);
       cap.textContent = caps[s];
+      if (dots) { var ds = dots.children; for (var d = 0; d < ds.length; d++) ds[d].classList.toggle('is-on', d === s); }
       place(zones[s]);
     }
     var live = false, lastP = -1;
@@ -795,6 +963,85 @@
     });
     menu.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  })();
+</script>
+<script>
+  // Поп-апы форм: data-popopen открывает запись, data-popopen="call" — заказ звонка.
+  // Отправка собирает письмо на почту клиники из полей формы.
+  (function () {
+    var pops = Array.prototype.slice.call(document.querySelectorAll('.pop'));
+    if (!pops.length) return;
+    var lastFocus = null;
+
+    function open(pop) {
+      lastFocus = document.activeElement;
+      pop.hidden = false;
+      var form = pop.querySelector('.pop__form');
+      if (form) { form.hidden = false; form.reset(); }
+      var doneEl = pop.querySelector('.pop__done');
+      if (doneEl) doneEl.hidden = true;
+      var first = pop.querySelector('input');
+      setTimeout(function () { if (first) first.focus(); }, 80);
+    }
+    function close(pop) {
+      pop.hidden = true;
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    document.querySelectorAll('[data-popopen]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var v = a.getAttribute('data-popopen');
+        var id = v === 'call' ? 'call-pop' : (v === 'policy' ? 'policy-pop' : 'zapis-pop');
+        var pop = document.getElementById(id);
+        if (pop) open(pop);
+      });
+    });
+    pops.forEach(function (pop) {
+      pop.querySelectorAll('[data-popclose]').forEach(function (el) {
+        el.addEventListener('click', function () { close(pop); });
+      });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      pops.forEach(function (pop) { if (!pop.hidden) close(pop); });
+    });
+
+    function wire(formId, build) {
+      var form = document.getElementById(formId);
+      if (!form) return;
+      var pop = form.closest('.pop');
+      var doneEl = pop.querySelector('.pop__done');
+      var agree = form.querySelector('[name="agree"]');
+      var agreeBox = form.querySelector('.pop__agree');
+      if (agree && agreeBox) {
+        agree.addEventListener('change', function () { agreeBox.classList.remove('is-err'); });
+      }
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!form.reportValidity()) return;
+        if (agree && !agree.checked) { if (agreeBox) agreeBox.classList.add('is-err'); agree.focus(); return; }
+        var d = function (n) { var el = form.elements[n]; return el && el.value.trim() ? el.value.trim() : '—'; };
+        var mail = build(d);
+        window.location.href = 'mailto:priem@aybolit-vlg.ru?subject=' + encodeURIComponent(mail.subject) + '&body=' + encodeURIComponent(mail.body);
+        form.hidden = true;
+        doneEl.hidden = false;
+      });
+    }
+    wire('zapis-form', function (d) {
+      return {
+        subject: 'Запись на приём — ' + d('name') + ' (' + d('phone') + ')',
+        body: 'Здравствуйте! Хочу записаться на приём.\n\nИмя: ' + d('name') + '\nТелефон: ' + d('phone') +
+          '\nПитомец: ' + d('pet') + '\nЧто беспокоит: ' + d('msg') + '\n\nПрошу перезвонить и подобрать время.'
+      };
+    });
+    wire('call-form', function (d) {
+      return {
+        subject: 'Заказ звонка — ' + d('name') + ' (' + d('phone') + ')',
+        body: 'Здравствуйте! Прошу перезвонить.\n\nИмя: ' + d('name') + '\nТелефон: ' + d('phone') +
+          '\nУдобное время звонка: ' + d('time')
+      };
+    });
   })();
 </script>
 </body>
