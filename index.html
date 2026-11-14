@@ -301,6 +301,8 @@
   .clean__fig { position: relative; aspect-ratio: 16 / 10; border-radius: var(--v-radius); overflow: hidden; box-shadow: var(--v-e2); background: var(--v-surface); }
   .clean__fig img { width: 100%; height: 100%; object-fit: cover; }
   .clean__fig figcaption { position: absolute; left: var(--v-5); top: var(--v-5); right: 50%; font-size: var(--v-t-sm); color: var(--v-ink-soft); }
+  /* подписи поверх фото: тёмный текст + белое свечение, чтобы читалось на любом фоне */
+  .pain__fig figcaption, .visit__fig figcaption, .who__fig figcaption, .clean__fig figcaption { color: var(--v-ink); font-weight: 500; text-shadow: 0 1px 10px rgb(255 255 255 / .9), 0 0 3px rgb(255 255 255 / .95); }
   .facts li { padding: var(--v-4) 0; border-top: 1px solid var(--v-hair); display: grid; gap: var(--v-1); }
   .facts li:last-child { border-bottom: 1px solid var(--v-hair); }
   .facts b { font-weight: 600; }
@@ -317,7 +319,7 @@
   }
 
   /* ---- 7 · вопрос 5 «Когда можно прийти?»: кабинет вечером за текстом, колонка с нотками, футер внутри сцены --- */
-  .close__back img { position: absolute; max-width: none; width: 112%; height: 112%; left: -6%; top: -6%; object-fit: cover; object-position: 64% 50%; }
+  .close__back img { position: absolute; max-width: none; width: 150%; height: 120%; left: 0; top: -10%; object-fit: cover; object-position: 0% 42%; }
   /* колонка света слева под текстом: фото остаётся видно справа (стол, окно, колонка) */
   .close__col { position: absolute; inset: 0; z-index: 2; pointer-events: none;
     background: linear-gradient(to right, rgb(244 245 249 / .9) 0%, rgb(244 245 249 / .78) 40%, rgb(244 245 249 / .3) 62%, transparent 78%); }
@@ -336,7 +338,7 @@
     background: rgb(244 245 249 / .84); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-size: var(--v-t-xs); color: var(--v-ink-soft); }
   .foot__warn { grid-column: 1 / -1; color: var(--v-ink); font-weight: 600; letter-spacing: .01em; }
   @media (max-width: 860px) {
-    .close__back img { object-position: 74% 50%; }
+    .close__back img { object-position: 30% 38%; }
     .close__col { background: linear-gradient(to bottom, rgb(244 245 249 / .92) 0%, rgb(244 245 249 / .84) 55%, rgb(244 245 249 / .5) 100%); }
     .close__inner { padding-top: var(--v-8); }
     .close__inner .v-display { font-size: var(--v-t-2xl); max-width: none; }
@@ -344,6 +346,26 @@
     .close__tel { font-size: var(--v-t-lg); }
     .foot { grid-template-columns: 1fr; gap: var(--v-2); font-size: var(--v-t-sm); padding: var(--v-5) var(--v-gutter) calc(var(--v-5) + env(safe-area-inset-bottom)); }
     .foot__more { display: none; }
+  }
+
+  /* ---- футер сайта: индиговая плашка под всеми актами ---- */
+  .vft { background: var(--v-accent-deep); color: rgb(255 255 255 / .75); font-size: var(--v-t-sm); }
+  .vft__grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: var(--v-7) var(--v-8); padding: var(--v-8) 0 var(--v-7); }
+  .vft__logo { display: inline-flex; align-items: center; gap: .65em; text-decoration: none; color: #fff; }
+  .vft__logo i { width: 2.1rem; height: 2.1rem; border-radius: .55rem; background: #fff; position: relative; flex: none; }
+  .vft__logo i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 34%; height: 34%; margin: -17% 0 0 -17%; border-radius: 50%; background: var(--v-accent-deep); }
+  .vft__logo span { font-family: var(--v-font-display); font-weight: 500; font-size: 1.02rem; letter-spacing: -0.01em; line-height: 1.15; }
+  .vft__logo small { display: block; font-family: var(--v-font-text); font-weight: 500; font-size: var(--v-t-xs); color: rgb(255 255 255 / .6); }
+  .vft__brand p { margin-top: var(--v-4); font-size: var(--v-t-xs); color: rgb(255 255 255 / .55); max-width: 32ch; text-wrap: pretty; }
+  .vft__col { display: grid; gap: var(--v-2); align-content: start; justify-items: start; }
+  .vft__col h4 { font-family: var(--v-font-display); font-weight: 500; font-size: var(--v-t-base); color: #fff; margin-bottom: var(--v-2); }
+  .vft__col a { color: rgb(255 255 255 / .8); text-decoration: none; padding-block: .15em; }
+  .vft__col a:hover { color: #fff; text-decoration: underline; }
+  .vft__bar { border-top: 1px solid rgb(255 255 255 / .16); font-size: var(--v-t-xs); color: rgb(255 255 255 / .55); }
+  .vft__barin { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--v-2) var(--v-5); padding: var(--v-4) 0 calc(var(--v-4) + env(safe-area-inset-bottom)); }
+  @media (max-width: 860px) {
+    .vft__grid { grid-template-columns: 1fr; gap: var(--v-6); padding: var(--v-7) 0 var(--v-6); }
+    .vft__barin { flex-direction: column; }
   }
 </style>
 </head>
@@ -364,7 +386,7 @@
         </div>
         <div class="hdr__tel">
           <a class="hdr__phone" href="tel:+78442380640">+7 (8442) 38-06-40</a>
-          <a class="hdr__callback" href="https://t.me/aybolit34_bot" target="_blank" rel="noopener">Заказать звонок</a>
+          <a class="hdr__callback" href="mailto:priem@aybolit-vlg.ru?subject=%D0%9F%D0%B5%D1%80%D0%B5%D0%B7%D0%B2%D0%BE%D0%BD%D0%B8%D1%82%D0%B5%20%D0%BC%D0%BD%D0%B5%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%9F%D0%BE%D0%B7%D0%B2%D0%BE%D0%BD%D0%B8%D1%82%D0%B5%2C%20%D0%BF%D0%BE%D0%B6%D0%B0%D0%BB%D1%83%D0%B9%D1%81%D1%82%D0%B0%2C%20%D0%BC%D0%BD%D0%B5%20%D0%BF%D0%BE%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%D1%83%3A%20">Заказать звонок</a>
         </div>
       </div>
     </div>
@@ -418,7 +440,7 @@
             <li>Приём по записи, без очереди</li>
           </ul>
           <div class="hero__cta">
-            <a class="v-btn" href="https://t.me/aybolit34_bot" target="_blank" rel="noopener">Записаться</a>
+            <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A">Записаться</a>
             <a class="hero__tel" href="tel:+78442380640">или позвоните <b>+7 (8442) 38-06-40</b></a>
           </div>
         </div>
@@ -457,7 +479,7 @@
         </ol>
         <div class="usl__foot" data-v-in data-v-in-self>
           <p>Не нашли свою ситуацию или не знаете, что именно нужно? Начните с осмотра: врач посмотрит, объяснит и напишет план с ценой по пунктам.</p>
-          <a class="v-btn v-btn--ghost" href="https://t.me/aybolit34_bot" target="_blank" rel="noopener">Записаться</a>
+          <a class="v-btn v-btn--ghost" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A">Записаться</a>
         </div>
       </div>
     </section>
@@ -504,7 +526,7 @@
             <li><h3><small>Шаг 5</small>Решение</h3><p>Можно начать в этот же день, можно забрать план домой и подумать. Давить не будем.</p></li>
           </ol>
           <div class="cta">
-            <a class="v-btn" href="https://t.me/aybolit34_bot" target="_blank" rel="noopener">Записаться</a>
+            <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A">Записаться</a>
             <span>Первый визит – осмотр и план за один приём. Напишите, что беспокоит, и подберём время.</span>
           </div>
         </div>
@@ -630,12 +652,8 @@
     <section data-v-act="pin" data-v-span="1.3" data-v-drift="#f4f5f9" id="zapis" aria-label="Вопрос 5: когда можно прийти?">
       <div data-v-stage>
         <div class="v-layer close__back" data-v-parallax="-0.3">
-          <img id="final-img" src="assets/final.webp" alt="" width="1920" height="1080" loading="lazy" decoding="async" data-spk="0.812 0.53" data-spk-m="0.812 0.53">
-          <div class="notes" data-notes-for="final-img" aria-hidden="true">
-            <span style="--delay: 0s;   --dx: -16px; --dy: -120px; --rot: -12deg; --dur: 4.4s">♪</span>
-            <span style="--delay: 1.5s; --dx: 20px;  --dy: -140px; --rot: 10deg;  --dur: 4.8s">♫</span>
-            <span style="--delay: 3s;   --dx: 4px;   --dy: -110px; --rot: -6deg;  --dur: 4.1s">♪</span>
-          </div>
+          <!-- Фото: Veterinarian Pet Alliance, Wikimedia Commons (CC) — врач у вольера с собакой в защитном воротнике -->
+          <img id="final-img" src="assets/final.webp" alt="Врач у вольера с собакой в защитном воротнике после операции" width="1920" height="1080" loading="lazy" decoding="async">
         </div>
         <div class="close__col" aria-hidden="true"></div>
         <div class="close" data-v-spotlight>
@@ -645,7 +663,7 @@
               <h2 class="v-display v-display--xl">Запишитесь на своё время</h2>
               <p>Напишите или позвоните: подберём время, назовём цену первого визита и ответим на остальные вопросы до стола. Кабинет ждёт.</p>
               <div class="close__btns">
-                <a class="v-btn" href="https://t.me/aybolit34_bot" target="_blank" rel="noopener" data-v-magnet="0.22" data-v-rise="0">Записаться</a>
+                <a class="v-btn" href="mailto:priem@aybolit-vlg.ru?subject=%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC%20%E2%80%94%20%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%20%D0%9F%D0%BB%D1%8E%D1%81&body=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D1%80%D0%B8%D1%91%D0%BC.%0A%D0%9F%D0%B8%D1%82%D0%BE%D0%BC%D0%B5%D1%86%20%28%D0%B2%D0%B8%D0%B4%2C%20%D0%BA%D0%BB%D0%B8%D1%87%D0%BA%D0%B0%2C%20%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%29%3A%0A%D0%A6%D0%B5%D0%BB%D1%8C%20%D0%B2%D0%B8%D0%B7%D0%B8%D1%82%D0%B0%20%D0%B8%D0%BB%D0%B8%20%D0%B6%D0%B0%D0%BB%D0%BE%D0%B1%D1%8B%3A%0A%D0%A3%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B5%20%D0%B4%D0%B0%D1%82%D0%B0%20%D0%B8%20%D0%B2%D1%80%D0%B5%D0%BC%D1%8F%3A%0A%D0%9C%D0%BE%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%3A" data-v-magnet="0.22" data-v-rise="0">Записаться</a>
                 <a class="v-btn v-btn--ghost" href="tel:+78442380640">Позвонить</a>
               </div>
             </div>
@@ -653,7 +671,8 @@
               <a class="close__tel" href="tel:+78442380640">+7 (8442) 38-06-40</a>
               <span><b>ул. Мира, 12</b>, Волгоград</span>
               <span>пн–сб 9:00–20:00, приём по записи</span>
-              <span>В мессенджере отвечаем в часы приёма</span>
+              <a href="mailto:priem@aybolit-vlg.ru">priem@aybolit-vlg.ru</a>
+              <span>На почту отвечаем в течение часа в рабочее время</span>
               <a href="https://yandex.ru/maps/?text=%D0%92%D0%BE%D0%BB%D0%B3%D0%BE%D0%B3%D1%80%D0%B0%D0%B4%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%9C%D0%B8%D1%80%D0%B0%2012" target="_blank" rel="noopener">Как добраться: клиника на Яндекс.Картах</a>
             </div>
           </div>
@@ -667,6 +686,37 @@
     </section>
 
   </main>
+
+  <!-- Футер сайта -->
+  <footer class="vft">
+    <div class="v-wrap vft__grid">
+      <div class="vft__brand">
+        <a class="vft__logo" href="#top"><i></i><span>Айболит Плюс<small>ветеринарная клиника · Волгоград</small></span></a>
+        <p>Лицензия № ЛО-34-77-001234 от 15.03.2019. Демо-сайт: все данные вымышлены.</p>
+      </div>
+      <nav class="vft__col" aria-label="Контакты клиники">
+        <h4>Контакты</h4>
+        <a href="https://yandex.ru/maps/?text=%D0%92%D0%BE%D0%BB%D0%B3%D0%BE%D0%B3%D1%80%D0%B0%D0%B4%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%9C%D0%B8%D1%80%D0%B0%2012" target="_blank" rel="noopener">ул. Мира, 12, Волгоград</a>
+        <a href="tel:+78442380640">+7 (8442) 38-06-40</a>
+        <a href="mailto:priem@aybolit-vlg.ru">priem@aybolit-vlg.ru</a>
+        <span>пн–сб 9:00–20:00, приём по записи</span>
+      </nav>
+      <nav class="vft__col" aria-label="Разделы сайта">
+        <h4>Разделы</h4>
+        <a href="#uslugi">Услуги</a>
+        <a href="#vizit">Как проходит визит</a>
+        <a href="#ceny">Цены</a>
+        <a href="#vrachi">Врачи</a>
+        <a href="#zapis">Запись</a>
+      </nav>
+    </div>
+    <div class="vft__bar">
+      <div class="v-wrap vft__barin">
+        <span>© 2026 Айболит Плюс</span>
+        <span>Имеются противопоказания, необходима консультация ветеринарного врача</span>
+      </div>
+    </div>
+  </footer>
 </div>
 
 <script src="vibe.js"></script>
@@ -683,32 +733,6 @@
     var bar = document.querySelector('.bar'), on = null;
     function tick() { var s = window.scrollY > 40; if (s !== on) { on = s; bar.classList.toggle('is-scrolled', s); } }
     window.addEventListener('scroll', tick, { passive: true }); tick();
-  })();
-
-  // Нотки из колонки (финал): контейнер .notes ставится на верх колонки в кадре. Координаты колонки – доли
-  // ширины и высоты картинки (data-spk, на телефоне data-spk-m); пересчёт через object-fit: cover и object-position
-  // самой картинки, поэтому нотки стоят на колонке при любом окне и едут вместе со слоем параллакса.
-  (function () {
-    var M = window.matchMedia('(max-width: 860px)');
-    var items = Array.prototype.slice.call(document.querySelectorAll('.notes[data-notes-for]')).map(function (n) {
-      var img = document.getElementById(n.getAttribute('data-notes-for'));
-      return img ? { n: n, img: img } : null;
-    }).filter(Boolean);
-    function place(it) {
-      var img = it.img, nw = img.naturalWidth, nh = img.naturalHeight;
-      if (!nw || !nh) return;
-      var f = ((M.matches && img.getAttribute('data-spk-m')) || img.getAttribute('data-spk') || '0.8 0.5').split(/\s+/).map(Number);
-      var bw = img.offsetWidth, bh = img.offsetHeight;
-      var pos = getComputedStyle(img).objectPosition.split(/\s+/).map(function (v) { return parseFloat(v) / 100; });
-      var s = Math.max(bw / nw, bh / nh), rw = nw * s, rh = nh * s;
-      var ox = (bw - rw) * (isNaN(pos[0]) ? .5 : pos[0]), oy = (bh - rh) * (isNaN(pos[1]) ? .5 : pos[1]);
-      it.n.style.left = (img.offsetLeft + ox + f[0] * rw).toFixed(1) + 'px';
-      it.n.style.top = (img.offsetTop + oy + f[1] * rh).toFixed(1) + 'px';
-    }
-    function all() { items.forEach(place); }
-    items.forEach(function (it) { if (it.img.complete) place(it); it.img.addEventListener('load', function () { place(it); }); });
-    window.addEventListener('resize', all);
-    window.addEventListener('load', all);
   })();
 
   // Фирменный ход: силуэты питомцев. Пять состояний по --v-p акта «Сколько это стоит?»:
