@@ -728,13 +728,6 @@
   }
   Vibe.mount(document.querySelector('.v-page'));
 
-  // Шапка: подложка после 40 px прокрутки, чтобы текст секций не просвечивал.
-  (function () {
-    var bar = document.querySelector('.bar'), on = null;
-    function tick() { var s = window.scrollY > 40; if (s !== on) { on = s; bar.classList.toggle('is-scrolled', s); } }
-    window.addEventListener('scroll', tick, { passive: true }); tick();
-  })();
-
   // Фирменный ход: силуэты питомцев. Пять состояний по --v-p акта «Сколько это стоит?»:
   // s0 осмотр (контур), s1 вакцинация (тело мягко), s2 уши/глаза/кожа (голова кошки), s3 стерилизация (живот собаки), s4 зубы (пасть кошки).
   // Кольцо-указатель встаёт на активную зону по её положению в SVG.
